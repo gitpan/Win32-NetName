@@ -1,0 +1,8 @@
+Win32::NetName - A more universal way of obtaining the UNC names of local paths
+
+To install the module:
+
+    perl Makefile.PL;
+    make;
+    make test;
+    make install;
