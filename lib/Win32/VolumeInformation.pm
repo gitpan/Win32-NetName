@@ -3,10 +3,11 @@ package Win32::VolumeInformation;
 use Win32::API;
 use File::Spec;
 
-use Exporter;
-@EXPORT = qw( GetVolumeInformation );
+use Exporter ();
+our @ISA = qw( Exporter );
+our @EXPORT_OK = qw( GetVolumeInformation );
 
-our $VERSION = 0.1;
+our $VERSION = 0.2;
 
 our $volinfofunc = Win32::API->new('kernel32', 'GetVolumeInformation', ['P','P','N','P','P','P','P','N'], 'N')
 	or die "Win32::API->new GetVolumeInformation: $!";

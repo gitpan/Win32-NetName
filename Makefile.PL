@@ -11,7 +11,7 @@ WriteMakefile
         : ()
     ),
     PREREQ_PM => { 
-                    Win32::API => undef,
+                    Win32::API => 0.41,
                     Win32::Lanman => undef
                  },
     'dist' => {COMPRESS=>'gzip',SUFFIX=>'gz'},

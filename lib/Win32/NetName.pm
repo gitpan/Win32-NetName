@@ -6,10 +6,11 @@ use Win32::Lanman;
 
 use Win32::VolumeInformation qw( GetVolumeInformation );
 
-use Exporter;
+use Exporter ();
+our @ISA = qw( Exporter );
 our @EXPORT_OK = qw( GetUniversalName GetLocalName );
 
-our $VERSION = 0.2;
+our $VERSION = 0.3;
 
 Win32::API->Import('kernel32', 'GetDriveType', ['P'], 'N')
 			or die "Win32::API->Import GetDriveType: $!";
