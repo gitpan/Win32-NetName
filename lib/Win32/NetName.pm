@@ -4,15 +4,16 @@ use File::Spec;
 use Win32::API;
 use Win32::Lanman;
 
-use Exporter;
+use Win32::VolumeInformation qw( GetVolumeInformation );
 
+use Exporter;
 our @EXPORT_OK = qw( GetUniversalName GetLocalName );
 
-our $VERSION = 0.11;
+our $VERSION = 0.2;
 
 Win32::API->Import('kernel32', 'GetDriveType', ['P'], 'N')
 			or die "Win32::API->Import GetDriveType: $!";
-
+			
 sub GetLocalName{
 	my $infile = $_[1];
 	$infile = File::Spec->rel2abs($infile);
@@ -32,7 +33,7 @@ sub GetLocalName{
     	$disk .= ':';
   		my $share;
    		Win32::Lanman::WNetGetConnection($disk,\$share);
-  		if( $vol eq $share ){
+  		if( uc $vol eq uc $share ){
   			my $outfile = File::Spec->catdir($disk,$path,$file);
   			$_[0] = $outfile;
   			return 1;
@@ -51,7 +52,7 @@ sub GetLocalPath{
 	my $node = $_[2] || Win32::NodeName();;
 	return 0 unless GetDiskShares(my $n, $node);
 	for my $s (@$n){
-		if( "\\\\$node\\$s->{netname}" eq $vol ){
+		if( uc "\\\\$node\\$s->{netname}" eq uc $vol ){
 			my $outfile = File::Spec->catdir($s->{path}, $path, $file );
 			$_[0] = $outfile;
 			return 1;
@@ -90,13 +91,27 @@ sub GetUniversalPaths{
 	my $node = $_[2] || Win32::NodeName();
 	my @names;
 	return 0 unless GetDiskShares(my $n, $node);
+	
+
+	my $compare = sub{ $_[0] eq $_[1] };
+	my($vol,$path,$file) = File::Spec->splitpath($infile);
+	my %info;
+	if( GetVolumeInformation($vol,\%info) ){
+		unless( $info{FS_CASE_SENSITIVE} ){
+        	$compare = sub{ uc $_[0] eq uc $_[1] };
+		}
+	}else{
+		return 0;
+	}
+	
+	
 	for my $s (@$n){
 		my $path = $s->{path};
-		if( $path eq $infile ){
+		if( $compare->($path,$infile) ){
 			push @names, "\\\\$node\\$s->{netname}";
 		}elsif( length $infile > length $path ){
 			my $test = substr($infile,0,length $path);
-			if( $test eq $path && substr($infile,length $path, 1) eq "\\" ){
+			if( $compare->($test,$path) && substr($infile,length $path, 1) eq "\\" ){
 				my @infile = File::Spec->splitdir($infile);
 				my @test = File::Spec->splitdir($test);
 				splice @infile, 0, scalar @test;
@@ -118,7 +133,7 @@ sub GetDiskShares{
 	my @info;
 	if (Win32::Lanman::NetShareEnum("\\\\$node",\@stuff)) {
 		for my $share (@stuff){
-			if( $share->{path} ){
+			if( $share->{type} == 0 ){
 				push @info, $share;
 			}
 		}
@@ -213,9 +228,7 @@ then the name of the local machine is used.
 
 http://msdn.microsoft.com/library/default.asp?url=/library/en-us/wnet/wnet/windows_networking_functions.asp
 
-L<Win32::Lanman>
-
-Win32::Lanman can be found on CPAN in directory http://www.cpan.org/authors/id/J/JH/JHELBERG/
+L<Win32::Lanman> http://www.cpan.org/authors/id/J/JH/JHELBERG/
 
 =head1 BUGS
 

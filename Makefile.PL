@@ -3,7 +3,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile
 (
     NAME            => 'Win32::NetName',
-    VERSION_FROM    => 'NetName.pm',
+    VERSION_FROM    => 'lib/Win32/NetName.pm',
     (
         $] >= 5.8.0
         ? (ABSTRACT   => 'A more universal way of obtaining the UNC names of local paths',
