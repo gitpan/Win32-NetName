@@ -8,7 +8,7 @@ use Exporter;
 
 our @EXPORT_OK = qw( GetUniversalName GetLocalName );
 
-our $VERSION = 0.1;
+our $VERSION = 0.11;
 
 Win32::API->Import('kernel32', 'GetDriveType', ['P'], 'N')
 			or die "Win32::API->Import GetDriveType: $!";
@@ -214,6 +214,8 @@ then the name of the local machine is used.
 http://msdn.microsoft.com/library/default.asp?url=/library/en-us/wnet/wnet/windows_networking_functions.asp
 
 L<Win32::Lanman>
+
+Win32::Lanman can be found on CPAN in directory http://www.cpan.org/authors/id/J/JH/JHELBERG/
 
 =head1 BUGS
 

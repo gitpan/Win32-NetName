@@ -2,3 +2,7 @@ Revision history for Perl extension Win32::NetName
 
 0.1  Fri Jun 06 11:36 2003
      First release.
+
+0.11 Wed Jun 11 15:30 2003
+     Win32::Lanman is hard to search for on CPAN. A reference to the author 
+     and directory is provided (http://www.cpan.org/authors/id/J/JH/JHELBERG/).

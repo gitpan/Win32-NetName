@@ -6,3 +6,11 @@ To install the module:
     make;
     make test;
     make install;
+
+Prerequisites are;
+
+Win32::API
+Win32::Lanman
+
+Win32::Lanman can be hard to find on CPAN. 
+It is located at http://www.cpan.org/authors/id/J/JH/JHELBERG/
